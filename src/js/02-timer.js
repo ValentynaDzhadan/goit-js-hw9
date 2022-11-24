@@ -10,11 +10,10 @@ const hoursEl = document.querySelector('[data-hours]');
 const minutesEl = document.querySelector('[data-minutes]');
 const secondsEl = document.querySelector('[data-seconds]');
 
-let currentData;
-let selectedData;
-
 buttonStartEl.setAttribute('disabled', true);
 buttonStopEl.setAttribute('disabled', true);
+
+let selectedData;
 
 const options = {
   enableTime: true,
@@ -23,9 +22,8 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     selectedData = selectedDates[0].getTime(); // time in ms
-    currentData = options.defaultDate.getTime(); // time in ms
-    if (selectedData < currentData) {
-      Notiflix.Notify.warning('Please choose a date in the future'); //  HELP it's difficult to see the text(
+    if (selectedData < options.defaultDate.getTime()) {
+      Notiflix.Notify.warning('Please choose a date in the future');
       buttonStartEl.setAttribute('disabled', true);
     } else {
       buttonStartEl.removeAttribute('disabled');
@@ -55,12 +53,9 @@ function startTimer(event) {
   inputEl.setAttribute('disabled', true);
   buttonStopEl.removeAttribute('disabled');
 
-  let deltaDate = selectedData - currentData;
-
   intervalId = setInterval(() => {
-    if (deltaDate > 999) {
-      // HELP which number here 999 or 1000, cant understand the logic
-      deltaDate -= 1000;
+    let deltaDate = selectedData - Date.now();
+    if (deltaDate > 0) {
       const { days, hours, minutes, seconds } = convertMs(deltaDate);
       daysEl.textContent = addLeadingZero(days);
       hoursEl.textContent = addLeadingZero(hours);
