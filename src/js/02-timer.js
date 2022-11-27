@@ -22,15 +22,12 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     selectedData = selectedDates[0].getTime(); // time in ms
+    resetTimerInterface();
     if (selectedData < options.defaultDate.getTime()) {
       Notiflix.Notify.warning('Please choose a date in the future');
       buttonStartEl.setAttribute('disabled', true);
     } else {
       buttonStartEl.removeAttribute('disabled');
-      daysEl.textContent = '00';
-      hoursEl.textContent = '00';
-      minutesEl.textContent = '00';
-      secondsEl.textContent = '00';
     }
   },
 };
@@ -40,29 +37,32 @@ buttonStartEl.addEventListener('click', startTimer);
 buttonStopEl.addEventListener('click', stopTimer);
 
 function stopTimer(event) {
+  stopTimerInterface(event);
+  clearInterval(intervalId);
+}
+
+function stopTimerInterface(event) {
   event.target.setAttribute('disabled', true);
   inputEl.removeAttribute('disabled');
-
-  clearInterval(intervalId);
 }
 
 let intervalId = null;
 
 function startTimer(event) {
-  event.target.setAttribute('disabled', true);
-  inputEl.setAttribute('disabled', true);
-  buttonStopEl.removeAttribute('disabled');
-
+  startTimerInterface(event);
   intervalId = setInterval(() => {
     let deltaDate = selectedData - Date.now();
     if (deltaDate > 0) {
       const { days, hours, minutes, seconds } = convertMs(deltaDate);
-      daysEl.textContent = addLeadingZero(days);
-      hoursEl.textContent = addLeadingZero(hours);
-      minutesEl.textContent = addLeadingZero(minutes);
-      secondsEl.textContent = addLeadingZero(seconds);
+      presentTime(days, hours, minutes, seconds);
     }
   }, 1000);
+}
+
+function startTimerInterface(event) {
+  event.target.setAttribute('disabled', true);
+  inputEl.setAttribute('disabled', true);
+  buttonStopEl.removeAttribute('disabled');
 }
 
 function convertMs(ms) {
@@ -82,4 +82,18 @@ function convertMs(ms) {
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
+}
+
+function presentTime(days, hours, minutes, seconds) {
+  daysEl.textContent = addLeadingZero(days);
+  hoursEl.textContent = addLeadingZero(hours);
+  minutesEl.textContent = addLeadingZero(minutes);
+  secondsEl.textContent = addLeadingZero(seconds);
+}
+
+function resetTimerInterface() {
+  daysEl.textContent = '00';
+  hoursEl.textContent = '00';
+  minutesEl.textContent = '00';
+  secondsEl.textContent = '00';
 }

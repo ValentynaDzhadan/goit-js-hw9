@@ -12,8 +12,8 @@ function createOnClick(e) {
 
   for (let i = 1; i <= amount; i++) {
     createPromise(i, delay)
-      .then(onCreatePromiseSuccess(i, delay))
-      .catch(onCreatePromiseError(i, delay));
+      .then(({ position, delay }) => onCreatePromiseSuccess(i, delay))
+      .catch(({ position, delay }) => onCreatePromiseError(i, delay));
     delay += step;
   }
 }

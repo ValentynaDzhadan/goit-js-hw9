@@ -16,10 +16,6 @@ function colorBcg() {
 
 function startChange() {
   timerId = setInterval(colorBcg, 1000);
-  //   timerId = setInterval(() => {
-  //     colorBcg();
-  //   }, 1000);
-
   buttonStopEl.removeAttribute('disabled');
   buttonStartEl.setAttribute('disabled', true);
 }
